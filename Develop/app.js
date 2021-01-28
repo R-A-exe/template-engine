@@ -113,11 +113,24 @@ async function collectData() {
     }
 }
 
+function outputDirectory(){
+    try{
+    fs.accessSync(OUTPUT_DIR, fs.constants.F_OK);
+    }catch(err){
+        err.code === 'ENOENT'? fs.mkdirSync(OUTPUT_DIR) : null;
+    }
+}
+
 
 (async function () {
     await collectData();
-    console.log(list)
+    outputDirectory();
+    fs.writeFile(outputPath, render(list), err => {
+        if (err) console.log(`Something went wrong: ${err}`);
+      });
 })();
+
+
 
 
 
