@@ -11,8 +11,115 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 
+var list = Array();
+
+
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+async function collectData() {
+    while (true) {
+
+        var employee = null;
+
+        var result = await inquirer.prompt([
+            {
+                name: 'name',
+                type: 'input',
+                message: 'Please enter name of employee.',
+                validate: async (input)=>{
+                    return !/[^a-zA-Z]/g.test(input)? true : "Please ensure the name only contains letters.";
+                }
+            },
+
+            {
+                name: 'id',
+                type: 'input',
+                message: 'Please enter ID of employee.',
+                validate: async (input)=>{
+                    return !/[^0-9]/g.test(input) ? true : "Please ensure the name only contains numbers.";
+                }
+            },
+
+            {
+                name: 'email',
+                type: 'input',
+                message: 'Please enter email of employee.',
+                validate: async (input)=>{
+                    return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/g.test(input) ? true : "Please enter a valid email address.";
+                }
+            },
+
+            {
+                name: 'role',
+                type: 'list',
+                choices: ['Manager', 'Engineer', 'Intern'],
+                message: 'Please enter role of employee.'
+            },
+        ]);
+
+
+        switch (result.role) {
+
+            case 'Manager':
+                var office = await inquirer.prompt([
+                    {
+                        name: 'office',
+                        type: 'input',
+                        message: 'Please enter office number.'
+                    }
+                ]);
+                employee = new Manager(result.name, result.id, result.email, office.office);
+                break;
+
+            case 'Engineer':
+                var github = await inquirer.prompt([
+                    {
+                        name: 'github',
+                        type: 'input',
+                        message: 'Please enter github account.'
+                    }
+                ]);
+
+                employee = new Engineer(result.name, result.id, result.email, github.github);
+                break;
+
+            case 'Intern':
+                var school = await inquirer.prompt([
+                    {
+                        name: 'school',
+                        type: 'input',
+                        message: 'Please enter school name.'
+                    }
+                ]);
+
+                employee = new Intern(result.name, result.id, result.email, school.school);
+                break;
+        }
+
+        list.push(employee);
+
+        var another = await inquirer.prompt([
+            {
+                name: 'another',
+                type: 'confirm',
+                message: 'Would you like to add another employee?'
+            }
+        ]);
+
+        if (!another.another) {
+            break;
+        }
+
+    }
+}
+
+
+(async function () {
+    await collectData();
+    console.log(list)
+})();
+
+
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
