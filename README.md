@@ -2,8 +2,6 @@
 
 ## Description
 
-Link to demo: https://drive.google.com/file/d/1ADjSNv3s4oQPuaCfSgu-_2i4bYCRxrh2/view?usp=sharing
-
 The purpose of this CLI is to provide a quick and easy way for creating a team info webpage. In order to use the application, run the app.js file and answer the prompts. The application loops through a list of questions about an employee (name, email, role, office number/github account/school) and popluates an html file based on the answers provided. The file is created in the 'output' folder within the directory.
 
 
